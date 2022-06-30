@@ -1,27 +1,39 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <v-app>
+    <Header/>
+    <v-main>
+      <v-container fluid>
+        <router-view></router-view>
+      </v-container>
+    </v-main>
+    <Footer />
+  </v-app>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import { defineComponent, onMounted } from 'vue'
+import {useStore} from 'vuex'
+import Header from './components/Header.vue'
+import Main from '@/components/Main.vue'
+import Footer from '@/components/Footer.vue'
 
 export default defineComponent({
   name: 'App',
-  components: {
-    HelloWorld
-  }
-});
-</script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+  components: {
+    Header,
+    Main,
+    Footer
+  },
+
+  setup() {
+    const store = useStore()
+    onMounted(() => {
+      fetch('https://jsonplaceholder.typicode.com/posts?_limit=20')
+        .then(response => response.json())
+        .then(json => store.dispatch('setPosts', json))
+    })
+    
+  },
+})
+</script>
